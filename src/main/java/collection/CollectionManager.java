@@ -1,4 +1,5 @@
 package collection;
+import cmd.SaveCommand;
 import ioManager.*;
 
 import java.io.IOException;
@@ -6,9 +7,12 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CollectionManager implements Serializable {
     private static final long serialVersionUID = 1L;
+    static Logger LOGGER = Logger.getLogger(CollectionManager.class.getName());
     private TreeSet<City> cityCollection;
     private Date initializationDate;
     private Integer idOrder;
@@ -74,6 +78,7 @@ public class CollectionManager implements Serializable {
             out.writeln("Коллекция сохранена");
         } catch (IOException e) {
             out.writeln("Ошибка сохранения");
+            LOGGER.log(Level.FINE,"Ошибка сохранения");
         }
 
     }

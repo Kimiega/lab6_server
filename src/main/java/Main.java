@@ -10,14 +10,29 @@ import ioManager.IWritable;
 import ioManager.ResponseOut;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 public class Main {
+    static Logger LOGGER;
+    static {
+        try(FileInputStream ins = new FileInputStream("log.config")){
+            LogManager.getLogManager().readConfiguration(ins);
+            LOGGER = Logger.getLogger(Main.class.getName());
+        }catch (IOException ex){
+            LOGGER.log(Level.WARNING,"Файл с настройками логгера не найден или недоступен\nИспользуются стартовые настройки");
+        }
+    }
+
+
 
     public static void main(String[] args){
         String path = "collection.json";
@@ -28,7 +43,7 @@ public class Main {
         }
         catch (IOException ex)
         {
-            System.err.println("Не удалось найти свободный порт");
+            LOGGER.log(Level.SEVERE,"Не удалось найти свободный порт");
             System.exit(0);
         }
         InetAddress SERVER_ADDRESS = null;
@@ -36,7 +51,7 @@ public class Main {
             SERVER_ADDRESS = InetAddress.getLocalHost();
         } catch (UnknownHostException e) {
             //e.printStackTrace();
-            System.err.println("Не удалось задать адрес сервера");
+            LOGGER.log(Level.SEVERE,"Не удалось задать адрес сервера");
             System.exit(0);
         }
         //start settings
@@ -58,11 +73,11 @@ public class Main {
             SERVER_SOCKET = new InetSocketAddress(SERVER_ADDRESS,SERVER_PORT);
             communication = new CommunicationUDP(SERVER_SOCKET);
         } catch (IOException e) {
-            System.err.println("Не удалось установить адрес сервера");
+            LOGGER.log(Level.SEVERE,"Не удалось установить адрес сервера");
             System.exit(0);
         }
         catch (IllegalArgumentException ex) {
-            System.err.println("Порт указан неверно");
+            LOGGER.log(Level.SEVERE,"Порт указан неверно");
             System.exit(0);
         }
 
@@ -107,14 +122,13 @@ public class Main {
             if (!file.createNewFile())
                 myCollection.load(ConsoleManager.getInstance(), path);
             else
-                System.out.println("Был создан новый файл коллекции");
+                LOGGER.log(Level.INFO,"Был создан новый файл коллекции");
         }
         catch (IOException ex){
-            System.out.println("File can't be created\nFinishing of working program");
-            //ex.printStackTrace();
-            System.exit(1);
+            LOGGER.log(Level.SEVERE,"Файл коллекции не может быть создан");
+            System.exit(0);
         }
-        System.out.println("Server started on "+SERVER_SOCKET.getAddress().getHostAddress()+":"+SERVER_SOCKET.getPort());
+        LOGGER.log(Level.INFO,"Server started on "+SERVER_SOCKET.getAddress().getHostAddress()+":"+SERVER_SOCKET.getPort());
         Environment serverEnv = new Environment(myCollection,remoteCommandMap,path,ConsoleManager.getInstance(),new ResponseOut(communication),false);
         Server server = new Server(serverEnv,communication);
         Thread serverConsole = new Thread(server::init);
@@ -123,8 +137,8 @@ public class Main {
         Environment localEnv = new Environment(myCollection,localCommandMap,path, ConsoleManager.getInstance(), ConsoleManager.getInstance(), false);
         Client client = new Client(localEnv);
         client.init();
-        System.out.println("Завершение работы серверной части");
+        LOGGER.log(Level.INFO,"Завершение работы серверной части");
         serverEnv.turnOff();
-        System.out.println("Завершение работы программы");
+        LOGGER.log(Level.INFO,"Завершение работы программы");
     }
 }

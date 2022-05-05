@@ -1,12 +1,15 @@
 package cmd;
 
 import client.Environment;
+import connection.CommunicationUDP;
 import connection.NetPackage;
 
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ExitCommand implements ICommand {
-
+    static Logger LOGGER = Logger.getLogger(ExitCommand.class.getName());
 
     @Override
     public String getName() {
@@ -27,7 +30,7 @@ public class ExitCommand implements ICommand {
 
     @Override
     public void execute(Environment env, NetPackage netPackage) {
-        System.err.println("Нельзя так");
+        LOGGER.log(Level.WARNING,"Был вызван exit клиентом, что запрещено");
     }
 
     @Override

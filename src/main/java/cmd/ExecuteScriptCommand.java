@@ -2,6 +2,7 @@ package cmd;
 
 import client.Client;
 import client.Environment;
+import connection.CommunicationUDP;
 import connection.NetPackage;
 import ioManager.EmptyOut;
 import ioManager.IReadable;
@@ -9,9 +10,11 @@ import ioManager.ReaderFile;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ExecuteScriptCommand implements ICommand {
-
+    static Logger LOGGER = Logger.getLogger(ExecuteScriptCommand.class.getName());
     @Override
     public String getName() {
         return "execute_script";
@@ -31,7 +34,8 @@ public class ExecuteScriptCommand implements ICommand {
                 readerFile = new ReaderFile(arg);
             }
             catch (IOException ex){
-                System.err.println("Файл скрипта не может быть прочитан");
+                env.getOut().writeln("Файл скрипта не может быть прочитан");
+                LOGGER.log(Level.FINE,"Файл скрипта не может быть прочитан");
                 return;
             }
            Environment envScript = new Environment(
@@ -47,18 +51,21 @@ public class ExecuteScriptCommand implements ICommand {
             try{clientScript.init();}
             catch(Exception ex){
                 env.getOut().writeln("Ошибка во время выполнения скрипта");
+                LOGGER.log(Level.FINE,"Ошибка во время выполнения скрипта");
             }
             env.getOut().writeln("Чтение скрипта завершено");
+            LOGGER.log(Level.FINE,"Чтение скрипта завершено");
             }
         else {
-            System.err.println("Аргумент должен содержать путь к файлу");
+            env.getOut().writeln("Аргумент должен содержать путь к файлу");
+            LOGGER.log(Level.FINE,"Аргумент должен содержать путь к файлу");
         }
 
     }
 
     @Override
     public void execute(Environment env, NetPackage netPackage) {
-        System.err.println("Этого не должно было произойти");
+        LOGGER.log(Level.WARNING,"Был вызван execute_script клиентом, что запрещено");
     }
 
     @Override

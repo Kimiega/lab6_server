@@ -4,9 +4,12 @@ import connection.CommunicationUDP;
 import connection.NetResponse;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ResponseOut implements IWritable{
     CommunicationUDP communication;
+    static Logger LOGGER = Logger.getLogger(ResponseOut.class.getName());
     public ResponseOut(CommunicationUDP communication){
         this.communication = communication;
     }
@@ -15,7 +18,7 @@ public class ResponseOut implements IWritable{
         try {
             communication.send(new NetResponse(s,false));
         } catch (IOException e) {
-            System.err.println("Ошибка отправки пакета");
+            LOGGER.log(Level.WARNING,"Ошибка во время отправки пакета");
         }
     }
 

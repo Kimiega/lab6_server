@@ -1,12 +1,15 @@
 package cmd;
 
 import client.Environment;
+import connection.CommunicationUDP;
 import connection.NetPackage;
 
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SaveCommand implements ICommand {
-
+    static Logger LOGGER = Logger.getLogger(SaveCommand.class.getName());
     @Override
     public String getName() {
         return "save";
@@ -25,7 +28,7 @@ public class SaveCommand implements ICommand {
 
     @Override
     public void execute(Environment env, NetPackage netPackage) {
-        System.err.println("Ne ne, ne tak");
+        LOGGER.log(Level.WARNING,"Был вызван save клиентом, что запрещено");
     }
 
     @Override

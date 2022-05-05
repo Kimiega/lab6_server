@@ -4,9 +4,12 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class WriterFile implements IWritable{
     private final File file;
+    static Logger LOGGER = Logger.getLogger(WriterFile.class.getName());
 
     public WriterFile(String path) throws IOException {
         file = new File(path);
@@ -23,7 +26,7 @@ public class WriterFile implements IWritable{
             fw.write(t);
         }
         catch (IOException ex){
-            System.err.println("Ошибка вывода");
+            LOGGER.log(Level.WARNING,"Ошибка записи в файл");
         }
 
     }

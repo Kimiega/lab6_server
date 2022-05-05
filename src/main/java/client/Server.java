@@ -6,9 +6,12 @@ import connection.CommunicationUDP;
 import connection.NetPackage;
 import connection.NetResponse;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.io.IOException;
 
 public class Server {
+    static Logger LOGGER = Logger.getLogger(Server.class.getName());
     private CommunicationUDP communication;
     private Environment env;
     public Server(Environment env, CommunicationUDP communication){
@@ -23,7 +26,7 @@ public class Server {
                 netPackage = communication.listening();
                // System.out.println("Packet received");
             } catch (IOException e) {
-                System.err.println("Ошибка прослушки порта");
+                LOGGER.log(Level.WARNING,"Ошибка прослушки порта");
                 continue;
             }
             catch (IllegalArgumentException ex){
@@ -31,7 +34,7 @@ public class Server {
                 continue;
             }
             catch (IllegalStateException ex){
-                System.err.println("Получен поврежденный пакет");
+                LOGGER.log(Level.WARNING,"Получен поврежденный пакет");
                 continue;
             }
             String cmd = netPackage.getCmd();
@@ -48,7 +51,7 @@ public class Server {
                         it++;
                     }
                 } catch (IOException e) {
-                    System.err.println("Ошибка отправки списка разрешенных команд");
+                    LOGGER.log(Level.WARNING,"Ошибка отправки списка разрешенных команд");
                 }
             }
             else {
@@ -57,13 +60,13 @@ public class Server {
             try {
                 communication.send(new NetResponse("",true)); //Отправка завершающего пакета
             } catch (IOException e) {
-                System.err.println("Ошибка отправки завершающего пакета");
+                LOGGER.log(Level.WARNING,"Ошибка отправки завершающего пакета");
             }
         }
         try {
             communication.close();
         } catch (IOException e) {
-            System.err.println("Ошибка закрытия сетевого канала");
+            LOGGER.log(Level.WARNING,"Ошибка закрытия сетевого канала");
         }
     }
 }

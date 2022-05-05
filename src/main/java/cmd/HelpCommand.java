@@ -30,7 +30,6 @@ public class HelpCommand implements ICommand {
         for (ICommand cmd : env.getCommandMap().values()){
             env.getOut().writeln(cmd.getDescription());
         }
-        env.getOut().write("");
     }
 
     @Override

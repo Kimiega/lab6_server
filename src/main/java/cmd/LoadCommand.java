@@ -1,12 +1,15 @@
 package cmd;
 
 import client.Environment;
+import connection.CommunicationUDP;
 import connection.NetPackage;
 
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LoadCommand implements ICommand {
-
+    static Logger LOGGER = Logger.getLogger(LoadCommand.class.getName());
     @Override
     public String getName() {
         return "load";
@@ -25,7 +28,7 @@ public class LoadCommand implements ICommand {
 
     @Override
     public void execute(Environment env, NetPackage netPackage) {
-        System.err.println("nonono");
+        LOGGER.log(Level.WARNING,"Был вызван load клиентом, что запрещено");
     }
 
     @Override
