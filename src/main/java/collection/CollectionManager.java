@@ -122,4 +122,6 @@ public class CollectionManager implements Serializable {
         this.idOrder = cm.idOrder;
         out.writeln("Коллекция была загружена из файла "+path);
     }
+
+
 }
